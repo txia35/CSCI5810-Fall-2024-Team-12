@@ -54,8 +54,8 @@ hsv_classifier = HSVClassifier(filters=filters)
 classifier = InertiaClassifier(classifier=hsv_classifier, inertia=20)
 
 # Teams and Match
-chelsea = Team(name="Chelsea", abbreviation="CHE", color=(255, 0, 0))
-man_city = Team(name="Man City", abbreviation="MNC", color=(240, 230, 188))
+chelsea = Team(name="Chelsea", abbreviation="NAP", color=(230, 130, 180))
+man_city = Team(name="Man City", abbreviation="BAR", color=(240, 230, 188))
 teams = [chelsea, man_city]
 match = Match(home=chelsea, away=man_city, fps=fps)
 match.team_possession = man_city
@@ -139,15 +139,25 @@ for i, frame in enumerate(video):
     # Convert back to numpy array after drawing
     frame = np.array(frame)
 
+    # print([player.team for player in players])
+
     # Filter players based on team validity
     valid_team_players = [player for player in players if player.team is not None]
-    players_to_consider = valid_team_players if valid_team_players else players
+    if len([p for p in valid_team_players if p is not None]) == 0:
+        valid_team_players = players
+    # players_to_consider = valid_team_players if valid_team_players else players
+        
+    min_x = 0
+    max_x = frame_width
+    min_y = 0
+    max_y = frame_height
 
     # Calculate bounding box to include maximum valid players
-    min_x = min(player.detection.points[0][0] for player in players_to_consider)
-    max_x = max(player.detection.points[1][0] for player in players_to_consider)
-    min_y = min(player.detection.points[0][1] for player in players_to_consider)
-    max_y = max(player.detection.points[1][1] for player in players_to_consider)
+    if len(valid_team_players) > 0:
+        min_x = min(player.detection.points[0][0] for player in valid_team_players)
+        max_x = max(player.detection.points[1][0] for player in valid_team_players)
+        min_y = min(player.detection.points[0][1] for player in valid_team_players)
+        max_y = max(player.detection.points[1][1] for player in valid_team_players)
     
     # Target center point for the zoomed area
     target_center_x = (min_x + max_x) // 2
@@ -179,7 +189,11 @@ for i, frame in enumerate(video):
     end_y = min(frame_height, start_y + crop_height)
     
     # Crop frame
+    # print(frame.size)
     frame = frame[start_y:end_y, start_x:end_x]
-
+    frame = PIL.Image.fromarray(frame)
+    # print(frame.size)
+    frame = match.draw_possession_counter(frame, counter_background=possession_background, debug=False)
+    frame = np.array(frame)
     # Write cropped frame to video
     video.write(frame)

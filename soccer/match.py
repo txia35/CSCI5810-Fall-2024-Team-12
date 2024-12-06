@@ -34,6 +34,7 @@ class Match:
         self.possession_counter = 0
         self.closest_player = None
         self.ball = None
+        self.font_size = 14
         # Amount of consecutive frames new team has to have the ball in order to change possession
         self.possesion_counter_threshold = 20
         # Distance in pixels from player to ball in order to consider a player has the ball
@@ -154,8 +155,12 @@ class Match:
 
         bar_x = origin[0]
         bar_y = origin[1]
-        bar_height = 29
-        bar_width = 310
+        bar_height = 18
+        bar_width = 155
+        # bar_height = 29
+        # bar_width = 310
+
+
 
         ratio = self.home.get_percentage_possession(self.duration)
 
@@ -201,6 +206,7 @@ class Match:
                 height=left_rectangle[1][1] - left_rectangle[0][1],
                 text=home_text,
                 color=self.home.text_color,
+                font=PIL.ImageFont.truetype("fonts/Gidole-Regular.ttf", size=self.font_size)
             )
 
         # Draw away text
@@ -216,6 +222,7 @@ class Match:
                 height=right_rectangle[1][1] - right_rectangle[0][1],
                 text=away_text,
                 color=self.away.text_color,
+                font=PIL.ImageFont.truetype("fonts/Gidole-Regular.ttf", size=self.font_size)
             )
 
         return frame
@@ -262,7 +269,7 @@ class Match:
                 frame,
                 rectangle=left_rectangle,
                 color=left_color,
-                radius=15,
+                radius=7,
             )
 
             frame = Draw.half_rounded_rectangle(
@@ -270,7 +277,7 @@ class Match:
                 rectangle=right_rectangle,
                 color=right_color,
                 left=True,
-                radius=15,
+                radius=7,
             )
         else:
             right_rectangle[0][0] -= 20
@@ -280,14 +287,14 @@ class Match:
                 rectangle=right_rectangle,
                 color=right_color,
                 left=True,
-                radius=15,
+                radius=7,
             )
 
             frame = Draw.half_rounded_rectangle(
                 frame,
                 rectangle=left_rectangle,
                 color=left_color,
-                radius=15,
+                radius=7,
             )
 
         return frame
@@ -369,6 +376,7 @@ class Match:
                 height=left_rectangle[1][1] - left_rectangle[0][1],
                 text=home_text,
                 color=self.home.text_color,
+                font=PIL.ImageFont.truetype("fonts/Gidole-Regular.ttf", size=self.font_size)
             )
 
         # Draw away text
@@ -382,6 +390,7 @@ class Match:
                 height=right_rectangle[1][1] - right_rectangle[0][1],
                 text=away_text,
                 color=self.away.text_color,
+                font=PIL.ImageFont.truetype("fonts/Gidole-Regular.ttf", size=self.font_size)
             )
 
         return frame
@@ -405,7 +414,7 @@ class Match:
         counter = np.array([blue, green, red, alpha])
         counter = counter.transpose()
         counter = PIL.Image.fromarray(counter)
-        counter = counter.resize((int(315 * 1.2), int(210 * 1.2)))
+        counter = counter.resize((int(150 * 1.2), int(100 * 1.2)))
         return counter
 
     def get_passes_background(self) -> PIL.Image.Image:
@@ -532,6 +541,7 @@ class Match:
             width=team_width,
             text=text,
             color=text_color,
+            font=PIL.ImageFont.truetype("fonts/Gidole-Regular.ttf", size=self.font_size)
         )
 
         frame = Draw.text_in_middle_rectangle(
@@ -541,6 +551,7 @@ class Match:
             width=time_width,
             text=counter_text,
             color="black",
+            font=PIL.ImageFont.truetype("fonts/Gidole-Regular.ttf", size=self.font_size)
         )
 
         return frame
@@ -603,8 +614,8 @@ class Match:
         """
 
         # get width of PIL.Image
-        frame_width = frame.size[0]
-        counter_origin = (frame_width - 540, 40)
+        frame_width, frame_height = frame.size
+        counter_origin = (frame_width - 200, frame_height - 130)
 
         frame = self.draw_counter_background(
             frame,
@@ -614,26 +625,28 @@ class Match:
 
         frame = self.draw_counter(
             frame,
-            origin=(counter_origin[0] + 35, counter_origin[1] + 130),
+            origin=(counter_origin[0] + 17, counter_origin[1] + 65),
             text=self.home.abbreviation,
             counter_text=self.home.get_time_possession(self.fps),
             color=self.home.board_color,
             text_color=self.home.text_color,
-            height=31,
-            width=150,
+            height=15,
+            width=75,
         )
         frame = self.draw_counter(
             frame,
-            origin=(counter_origin[0] + 35 + 150 + 10, counter_origin[1] + 130),
+            origin=(counter_origin[0] + 17 + 75 + 5, counter_origin[1] + 65),
             text=self.away.abbreviation,
             counter_text=self.away.get_time_possession(self.fps),
             color=self.away.board_color,
             text_color=self.away.text_color,
-            height=31,
-            width=150,
+            height=15,
+            width=75,
         )
         frame = self.possession_bar(
-            frame, origin=(counter_origin[0] + 35, counter_origin[1] + 195)
+            frame, origin=(counter_origin[0] + 17, counter_origin[1] + 97)
+            # frame, origin=(counter_origin[0] + 35, counter_origin[1] + 195)
+
         )
 
         if self.closest_player:

@@ -54,18 +54,33 @@ hsv_classifier = HSVClassifier(filters=filters)
 # Add inertia to classifier
 classifier = InertiaClassifier(classifier=hsv_classifier, inertia=20)
 
+# # Teams and Match
+# home_team = Team(
+#     name="Napoli",
+#     abbreviation="NAP",
+#     color=(40, 200, 240), # Need to update color of teams
+#     board_color=(244, 86, 64),
+#     text_color=(255, 255, 255),
+# )
+# away_team = Team(name="Barcelona", abbreviation="BAR", color=(242, 250, 20))
+# teams = [home_team, away_team]
+# match = Match(home=home_team, away=away_team, fps=fps)
+# match.team_possession = home_team
+
 # Teams and Match
 chelsea = Team(
     name="Chelsea",
-    abbreviation="CHE",
+    abbreviation="NAP",
     color=(255, 0, 0),
     board_color=(244, 86, 64),
     text_color=(255, 255, 255),
 )
-man_city = Team(name="Man City", abbreviation="MNC", color=(240, 230, 188))
+man_city = Team(name="Man City", abbreviation="BAR", color=(240, 230, 188))
 teams = [chelsea, man_city]
 match = Match(home=chelsea, away=man_city, fps=fps)
 match.team_possession = man_city
+
+
 
 # Tracking
 player_tracker = Tracker(
